@@ -32,21 +32,51 @@ body {
 }
 .card{
     display: inline-block;
+    position: relative;
     margin: auto;
     padding: 20px;
     height: 120px;
     width: 90px;
-    background-color: whitesmoke;
+    /* background-color: whitesmoke; */
     color: black;
-    border-radius: 15px;
-    /* box-shadow: 5px 10px #333; */
+     border-radius: 15px;;
     margin: 10px;
-    /* font-size: 1rem;
-    font-family: Domine;
-    font-weight: 700;
-    line-height: .8;
-    font-feature-settings: "tnum";
-    font-variant-numeric: tabular-nums; */
+}
+
+.thecard{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style:preserve-3d;
+    transition: all 0.5s ease;
+    margin-top: -20px;
+    margin-left: -20px;
+     border-radius: 10px;;
+}
+.thefront{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    flex-direction: column;
+    backface-visibility: hidden;
+   text-align: center;
+   transform: rotateY(180deg);
+    border-radius: 10px;;
+}
+.theback{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+   text-align: center;
+   background-color: #7717FF;
+  
+    border-radius: 10px;;
+  
 }
 .score{
     background: rgb(63, 63, 63);
@@ -57,18 +87,7 @@ body {
     line-height: 1.5;
     width: fit-content;
 }
-.cardB{
-    position: absolute;
-    top:56px;
-    left: 0;
-    margin: auto;
-    padding: 20px;
-    height: 120.5px;
-    width: 90.5px;
-    background-color: rgb(78, 12, 149);
-    border-radius: 15px;
-    margin: 10px;
-}
+
 .win{
      border: 5px solid #3dd179;
 }
@@ -134,6 +153,18 @@ body {
     background-color: #7717FF;
     margin-top: 12px;
 }
+@keyframes slideDown {
+    0% {
+        transform: translate3d(15.7rem, -10rem, -10rem);
+    }
+    100% {
+        transform: translate(0%);
+    }
+}
+
+.slide-down {
+    animation: slideDown 0.2s forwards;
+}
 
 @media screen and (max-width:992px) {
     body {
@@ -153,18 +184,14 @@ body {
         display: inline-block;
         margin: 5px;
         padding: 0px;
-        padding-top: 8px;
+        /* padding-top: 8px; */
         height: 75px;
         width: 55.5px;
-        border-radius: 8px;
+        
     }
-    .cardB{
-        padding: 0px;
-        height: 83px;
-        width: 56px;
-        border-radius: 8px;
-        margin: 5px;
-        top:47px;
+    .thecard{
+        margin-top: 0;
+        margin-left: 0;
     }
     .big{
         font-size: 1.8em;

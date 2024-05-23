@@ -66,19 +66,34 @@ const app = (function () {
     game.dealerHand = [];
     game.playerHand = [];
     const childElement = game.playerScore;
+    childElement.style.display="none";
     childElement.style.backgroundColor = "gray";
     childElement.style.color = "#fff";
-    // game.dealerScore.textContent = "*";
     game.start = true;
     lockWager(true);
     turnOff(game.btnDeal);
     game.playerCards.innerHTML = "";
     game.dealerCards.innerHTML = "";
-    takeCard(game.dealerHand, game.dealerCards, true);
-    takeCard(game.dealerHand, game.dealerCards, false);
-    takeCard(game.playerHand, game.playerCards, false);
-    takeCard(game.playerHand, game.playerCards, false);
-    updateCount();
+    const cards = [
+      [game.dealerHand, game.dealerCards, true],
+      [game.dealerHand, game.dealerCards, false],
+      [game.playerHand, game.playerCards, false],
+      [game.playerHand, game.playerCards, false],
+    ];
+    cards.forEach((card, index) => {
+     takeCard(card[0], card[1], card[2], index);
+  });
+  setTimeout(() => {
+    childElement.style.display="block"
+    showResult();
+}, 2000);  
+    // takeCard(game.dealerHand, game.dealerCards, true);
+    // takeCard(game.dealerHand, game.dealerCards, false);
+    // takeCard(game.playerHand, game.playerCards, false);
+    // takeCard(game.playerHand, game.playerCards, false);
+    setTimeout(() => {
+      updateCount();
+  }, 700); 
     let dealerScor = game.dealerHand[1].value;
     game.dealerScore.textContent = dealerScor;
   }
@@ -91,7 +106,9 @@ const app = (function () {
 
   function nextCard() {
     takeCard(game.playerHand, game.playerCards, false);
-    updateCount();
+    setTimeout(() => {
+      updateCount();
+  }, 700); 
   }
 
   function findWinner() {
@@ -102,6 +119,14 @@ const app = (function () {
 
       game.dealerScore.textContent = dealer;
       game.cardBack.style.display = "none";
+      setTimeout(() => {
+        game.dealerCards
+          .querySelector(".card")
+          .querySelector(".thecard").style.transform = "rotateY(180deg)";
+        game.dealerCards
+          .querySelector(".card")
+          .querySelector(".thecard").style.transition = "transform 0.1s";
+      }, 100);
     }
     if (dealer > 21) {
       // game.status.textContent = "Dealer Busted with " + dealer + "";
@@ -119,7 +144,6 @@ const app = (function () {
       });
     } else if ((player < 22 && player > dealer) || dealer > 21) {
       // game.status.textContent = "You Win with " + player + "";
-
       const childElement = game.playerScore;
       childElement.style.backgroundColor = "#3dd179";
       childElement.style.color = "#000";
@@ -135,13 +159,13 @@ const app = (function () {
       // game.status.textContent += "Dealer wins with" + dealer + "";
       score[0]++;
       const childElement = game.playerScore;
-      childElement.style.backgroundColor = "#f1323e";
-      childElement.style.color = "#000";
       let children =
-        childElement.previousElementSibling.querySelectorAll(".card");
+      childElement.previousElementSibling.querySelectorAll(".card");
       children.forEach((child) => {
         child.classList.add("lose");
       });
+      childElement.style.backgroundColor = "#f1323e";
+      childElement.style.color = "#000";
     }
     if (game.cash < 1) {
       game.cash = 0;
@@ -158,6 +182,14 @@ const app = (function () {
   function dealerPlay() {
     let dealer = scorer(game.dealerHand);
     game.cardBack.style.display = "none";
+    setTimeout(() => {
+      game.dealerCards
+        .querySelector(".card")
+        .querySelector(".thecard").style.transform = "rotateY(180deg)";
+      game.dealerCards
+        .querySelector(".card")
+        .querySelector(".thecard").style.transition = "transform 0.3s";
+    }, 500);
     // game.status.textContent = "Dealer score" + dealer + "";
     if (dealer >= 17) {
       game.dealerScore.textContent = dealer;
@@ -227,38 +259,60 @@ const app = (function () {
     turnOff(game.btnStand);
   }
 
-  function takeCard(hand, ele, h) {
+  function takeCard(hand, ele, h,index) {
     if (game.deck.length == 0) {
       buildDeck();
     }
     let temp = game.deck.shift();
     hand.push(temp);
-    showCard(temp, ele);
+    setTimeout(() => {
+      showCard(temp, ele, h);
+  }, index * 500);
     if (h) {
       game.cardBack = document.createElement("div");
       game.cardBack.classList.add("cardB");
+      game.cardBack.classList.add("slide-down");
       ele.append(game.cardBack);
     }
   }
 
-  function showCard(card, el) {
+  function showCard(card, el, h) {
     if (card != undefined) {
       let div = document.createElement("div");
+      let theCard = document.createElement("div");
+      let theFront = document.createElement("div");
+      let theBack = document.createElement("div");
+      if (!h) {
+        setTimeout(() => {
+          theCard.style.transform = "rotateY(180deg)";
+          theCard.style.transition = "transform 0.3s";
+        }, 500);
+      }
 
+      div.append(theCard);
+      theCard.append(theFront);
+      theCard.append(theBack);
+      theCard.classList.add("thecard");
+      theFront.classList.add("thefront");
+      theBack.classList.add("theback");
       div.classList.add("card");
+      div.classList.add("slide-down");
       if (card.suit === "hearts" || card.suit === "diams") {
         div.classList.add("red");
       }
       let span2 = document.createElement("div");
       span2.innerHTML = card.rank;
       span2.classList.add("big");
-      div.appendChild(span2);
+      theFront.appendChild(span2);
       let span3 = document.createElement("div");
       span3.innerHTML = "&" + card.suit + ";";
       span3.classList.add("big");
-      div.appendChild(span3);
+      theFront.appendChild(span3);
       el.appendChild(div);
     }
+  }
+  function showResult() {
+   game.player.append(game.playerScore);
   }
 
   function turnOff(btn) {
@@ -270,13 +324,13 @@ const app = (function () {
 
   function turnOn(btn) {
     btn.disabled = false;
-    if (!btn.querySelector('svg')) {
+    if (!btn.querySelector("svg")) {
       btn.style.backgroundColor = "#7717FF";
-  }else{
-    btn.style.backgroundColor = "#000";
-  }
-  btn.style.opacity = "1";
-  btn.style.cursor = "pointer";
+    } else {
+      btn.style.backgroundColor = "#000";
+    }
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
     btn.style.color = "#fff";
   }
 
@@ -335,7 +389,7 @@ const app = (function () {
     game.playerCards.classList.add("card-container");
     game.cardSection.append(game.player);
     game.player.append(game.playerCards);
-    game.player.append(game.playerScore);
+   
     game.dashboard = document.createElement("div");
     game.buttonContainer = document.createElement("div");
     game.buttonContainer.classList.add("btn-container");
