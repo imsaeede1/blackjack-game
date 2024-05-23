@@ -17,6 +17,10 @@ const app = (function () {
     // scoreBoard();
     updateCash();
     deal();
+    const childElement = game.playerScore;
+      childElement.style.backgroundColor = "gray";
+      childElement.style.color = "#fff";
+      childElement.innerHTML = "";
   }
 
   function updateCash() {
